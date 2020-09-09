@@ -1,16 +1,16 @@
-
- # ArrayList源码解析和设计思路 
- ## 整体架构：
+ # 集合类总结
+ ## ArrayList源码解析和设计思路 
+ ### 整体架构：
         index(0开始) elementData数组本身
         DEFAULT_CAPACAITY 数组的初始大小默认是10
         size当前数组的大小 int 没有使用volatile修饰 非线程安全
         modCount统计当前数组被修改的版本次数，数组结构有变动，就会+1
- ## 类注释
+ ### 类注释
        允许put null 值，会自动扩容
        size isEmpty get set add 等方法时间复杂度都是O(1)
        是非线程安全的 多线程情况下 推荐使用线程安全类Collections.synchronizedList
        增强for循环，或者迭代使用过程中，如果数组大小被改变，会快速失败，抛出异常。
- ## 源码解析
+ ### 源码解析
 	          初始化 
 	           无参数初始化 ，数组大小为空
 	           指定初始数据初始化 elementData是保存数组的容器 默认为null
@@ -87,16 +87,16 @@
               只有当 ArrayList 作为共享变量时，才会有线程安全问题，当 ArrayList 是方法内的局部变量时，是没有线程安全的问题的。
               ArrayList 有线程安全问题的本质，是因为 ArrayList 自身的 elementData、size、modConut 在进行各种操作时，都没有加锁，而且这些变量的类型并非是可见（volatile）的，所以如果多个线程对这些变量进行操作时，可能会有值被覆盖的情况。
               类注释中推荐我们使用 Collections#synchronizedList 来保证线程安全，SynchronizedList 是通过在每个方法上面加上锁来实现，虽然实现了线程安全，但是性能大大降低，
-        -- LinkedList 源码解析
+## LinkedList 源码解析
            场景 适用于集合元素先入先出和先入后出的场景
-         - 整体架构
-             底层是一个双向链表
-	          链表每个节点我们叫做Node Node有prev属性 代表前一个节点 next属性代表后一个节点
-	          first 是双向链表的头节点 它的前一个结点是null
-	          last是双向链表的尾巴节点 后一个节点是null
-	           当链表中没有数据时 first last 是同一个节点 前后都指向null
-	           因为是双向链表，只要机器内存足够强大 是没有大小限制的。
-         - 源码解析
+### 整体架构
+    底层是一个双向链表
+    链表每个节点我们叫做Node Node有prev属性 代表前一个节点 next属性代表后一个节点
+    first 是双向链表的头节点 它的前一个结点是null
+    last是双向链表的尾巴节点 后一个节点是null
+    当链表中没有数据时 first last 是同一个节点 前后都指向null
+     因为是双向链表，只要机器内存足够强大 是没有大小限制的。
+### 源码解析
              -追加 新增
                 追加可以加到头部也可以加到尾部
                  add默认尾部 addFirst头部添加
@@ -208,7 +208,7 @@
                  else
                  nextIndex--;
                   lastReturned = null;
-        -- list涉及到问题
+## list涉及到问题
           -扩容类问题
 	        1 ArrayList 无参数构造器构造，现在 add 一个值进去，此时数组的大小是多少，下一次扩容前最大可用大小是多少？
               此处数组的大小是 1，下一次扩容前最大可用大小是 10，因为 ArrayList 第一次扩容时，是有默认值的，默认值是 10，在第一次 add 一个值进去时，数组的可用大小被扩容到 10 了
@@ -257,7 +257,7 @@
            双向链表中双向的意思是说前后节点之间互相有引用，链表的节点我们称为 Node。Node 有三个属性组成：其前一个节点，本身节点的值，其下一个节点，假设 A、B 节点相邻，A 节点的下一个节点就是 B，B 节点的上一个节点就是 A，两者互相引用，在链表的头部节点，我们称为头节点。头节点的前一个节点是 null，尾部称为尾节点，尾节点的后一个节点是 null，如果链表数据为空的话，头尾节点是同一个节点，本身是 null，指向前后节点的值也是 null。
           新增：我们可以选择从链表头新增，也可以选择从链表尾新增，如果是从链表尾新增的话，直接把当前节点追加到尾节点之后，本身节点自动变为尾节点。
            删除：把删除节点的后一个节点的 prev 指向其前一个节点，把删除节点的前一个节点的 next 指向其后一个节点，最后把删除的节点置为 null 即可。	       
-        -- vector arraylist linkedList 
+## vector arraylist linkedList 
 
                 都是实现集合框架中的list  有序集合  都能提供按照位置进行定位 添加 删除的操作；都能提供迭代器遍历容器内容
 
@@ -288,7 +288,7 @@
 
 			       Collections  默认方法的形式实现在里面
 			        jdk9 提供静态工厂方法 List.of  没有使用可变参数  可变参数需要jvm额外开销
-		-- hashMap 源码解析
+## hashMap 源码解析
 		    整体架构
 		      数组+链表+红黑树 其中当链表的长度超过8时并且数组大小大于64时，链表会转换成红黑树，当红黑树的大小小于等于6m会退化为链表	        
 		     hashmap 数组的元素可能是个Node 也可能是个链表 也可能是个红黑树。
@@ -472,7 +472,7 @@
 
                         为什么树华
                             链表查询是线性的     严重影响存取的性能                      
-        -- treeMap LinkhashMap
+## treeMap LinkhashMap
               treeMap 是如何根据 key 进行排序的，LinkedHashMap 是如何用两种策略进行访问的。
               知识储备
                 两种排序
@@ -571,7 +571,7 @@
                      发现队头元素被删除了，LinkedHashMap 本身是没有 put 方法实现的，调用的是 HashMap 的 put 方法，但 LinkedHashMap 实现了 put 方法中的调用 afterNodeInsertion 方法，这个方式实现了删除，
                         // removeNode 删除头节点
                        removeNode(hash(key), key, null, false, true);
-        -- map 源码会问的问题
+## map 源码会问的问题
 
            - map整体数据结构类问题
               1 HashMap 底层数据结构
@@ -639,7 +639,7 @@
 
              为什么推荐 TreeMap 的元素最好都实现 Comparable 接口？但 key 是 String 的时候，我们却没有额外的工作呢？
                  因为 TreeMap 的底层就是通过排序来比较两个 key 的大小的，所以推荐 key 实现 Comparable 接口，是为了往你希望的排序顺序上发展， 而 String 本身已经实现了 Comparable 接口，所以使用 String 时，我们不需要额外的工作，不仅仅是 String ，其他包装类型也都实现了 Comparable 接口，如 Long、Double、Short 等等。   
-        -- hashSet TreeSet源码解析
+## hashSet TreeSet源码解析
             HashSet、TreeSet 两个类是在 Map 的基础上组装起来的类      
             1 HashSet
              类注释
@@ -708,7 +708,7 @@
                  TreeSet 和 HashSet 两个 Set 的内部实现结构和原理？
                     HashSet 底层对 HashMap 的能力进行封装，比如说 add 方法，是直接使用 HashMap 的 put 方法，比较简单，但在初始化的时候，我看源码有一些感悟：说一下 HashSet 小结的四小点。
                     TreeSet 主要是对 TreeMap 底层能力进行封装复用，我发现了两种非常有意思的复用思路，重复 TreeSet 两种复用思路。  
-        -- 集合源码作用
+## 集合源码作用
               集合类图
              Map
               sortedMap  navigableMap  treemap
@@ -777,7 +777,7 @@
 
                      如果返回的数组大小和申明的数组大小一致，那么就会正常返回，否则，一个新数组就会被分配返回。
                      所以我们在使用有参 toArray 方法时，申明的数组大小一定要大于等于 List 的大小，如果小于的话，你会得到一个空数组。
-        -- 集合在java7 java8中的不同
+## 集合在java7 java8中的不同
            通用区别
              1 所有集合都新增了forEach方法
              List、Set、Map 在 Java 8 版本中都增加了 forEach 的方法，方法的入参是 Consumer，Consumer 是一个函数式接口，可以简单理解成允许一个入参，但没有返回值的函数式接口
@@ -822,7 +822,7 @@
                  shMap 8 和 7 有啥区别？
                     HashMap 8 和 7 的差别太大了，新增了红黑树，修改了底层数据逻辑，修改了 hash 
                     算法，几乎所有底层数组变动的方法都重写了一遍，可以说 Java 8 的 HashMap 几乎重新了一遍。
-        -- Guava中使用
+## Guava中使用
            1 运用工厂模式进行初始化
                JDK 7 之前，我们新建集合类时，声明和初始化都必须写上泛型说明，像这样：List<泛型> list = new ArrayList<泛型>(); ， JDK 7 之后有所改变，我们只需要在声明处写上泛型说明，像这样：List<泛型> list = new ArrayList<>();   
 
