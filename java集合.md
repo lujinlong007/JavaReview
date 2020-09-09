@@ -1,17 +1,16 @@
-# JavaReview
 
-	   # ArrayList源码解析和设计思路
-	       * 整体架构：
-	         index(0开始) elementData数组本身
-	         DEFAULT_CAPACAITY 数组的初始大小默认是10
-	         size当前数组的大小 int 没有使用volatile修饰 非线程安全
-	         modCount统计当前数组被修改的版本次数，数组结构有变动，就会+1
-	       类注释
-	         允许put null 值，会自动扩容
-	         size isEmpty get set add 等方法时间复杂度都是O(1)
-	         是非线程安全的 多线程情况下 推荐使用线程安全类Collections.synchronizedList
-	         增强for循环，或者迭代使用过程中，如果数组大小被改变，会快速失败，抛出异常。
-	       --源码解析
+ # ArrayList源码解析和设计思路 
+ ## 整体架构：
+        index(0开始) elementData数组本身
+        DEFAULT_CAPACAITY 数组的初始大小默认是10
+        size当前数组的大小 int 没有使用volatile修饰 非线程安全
+        modCount统计当前数组被修改的版本次数，数组结构有变动，就会+1
+ ## 类注释
+       允许put null 值，会自动扩容
+       size isEmpty get set add 等方法时间复杂度都是O(1)
+       是非线程安全的 多线程情况下 推荐使用线程安全类Collections.synchronizedList
+       增强for循环，或者迭代使用过程中，如果数组大小被改变，会快速失败，抛出异常。
+ ## 源码解析
 	          初始化 
 	           无参数初始化 ，数组大小为空
 	           指定初始数据初始化 elementData是保存数组的容器 默认为null
